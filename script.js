@@ -308,6 +308,14 @@ export function showConfirm(msg) {
     openOverlay('confirmOverlay');
   });
 }
+document.getElementById('confirmYes').addEventListener('click', () => {
+  closeOverlay('confirmOverlay');
+  if (_confirmResolve) _confirmResolve(true);
+});
+document.getElementById('confirmNo').addEventListener('click', () => {
+  closeOverlay('confirmOverlay');
+  if (_confirmResolve) _confirmResolve(false);
+});
 
 /* ============ SHA-256 (usado pela senha crítica em admin.js) ============ */
 export async function sha256Hex(str) {
