@@ -21,8 +21,8 @@ import { FOX_LOGO, PRIZE1_IMAGE, PRIZE2_IMAGE } from "./images.js";
 export const TOTAL_NUMBERS = 150;
 export const PRICE = 5.00;
 const PIX = {
-  key: "51123316821",
-  name: "MIGUEL VIEIRA AMARAL",
+  key: "15c7d9e9-8648-41e2-953b-68e1df5d5e23",
+  name: "ARIANA RODRIGUES NERES DE MEDEIROS",
   city: "SAO PAULO"
 };
 
