@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Rifa Kitsune Interclasse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="bg-kanji" style="left:-20px; top:12vh; font-size:220px; transform:rotate(-8deg);">福</div>
+<div class="bg-kanji" style="right:-30px; top:55vh; font-size:260px; transform:rotate(6deg);">運</div>
+<div class="bg-kanji" style="left:8vw; bottom:-40px; font-size:200px; transform:rotate(3deg);">狐</div>
+
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-inner">
+    <div class="intro-fox-spacer"></div>
+    <div class="intro-glow"></div>
+    <div class="intro-kanji">狐</div>
+    <div class="intro-title">RIFA <span>KITSUNE</span></div>
+    <div class="intro-sub">INTERCLASSE</div>
+    <div class="intro-line"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+<div class="fox-wrap">
+  <svg class="fox-ring" viewBox="0 0 200 200">
+    <defs><path id="ringPath" d="M 100,100 m -88,0 a 88,88 0 1,1 176,0 a 88,88 0 1,1 -176,0"/></defs>
+    <text style="fill:var(--red-bright); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:4px;">
+      <textPath id="ringText" href="#ringPath" startOffset="0%">KITSUNE • KITSUNE • KITSUNE • KITSUNE • </textPath>
+    </text>
+  </svg>
+  <img class="fox-mark" id="foxTrigger" src="" alt="Kitsune - logo da sala">
+</div>
+  <div class="kanji">狐 · KITSUNE</div>
+  <div class="title-row">
+    <h1>RIFA <span>KITSUNE</span><br>INTERCLASSE</h1>
+  </div>
+  <p class="sub">150 números · R$ 5,00 cada. Toda a arrecadação vai direto pras camisas personalizadas da nossa sala. Escolha seus números, pague no PIX e boa sorte! 🦊🔥</p>
+
+  <div class="stats">
+    <div class="stat"><b id="statSold">0</b><span>vendidos</span></div>
+    <div class="stat"><b id="statFree">150</b><span>disponíveis</span></div>
+    <div class="stat"><b id="statTotal" class="mono">R$ 0,00</b><span>arrecadado</span></div>
+  </div>
+  <div class="progress-wrap" id="progressWrap" style="display:none;">
+    <div class="progress-label"><span>Meta da camisa</span><span id="progressText">R$0 / R$0</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</section>
+
+<!-- WINNER BANNER -->
+<div class="winner-banner" id="winnerBanner" style="display:none;">
+  <div class="winner-box">
+    <h3>🎉 Resultado do sorteio</h3>
+    <div id="winnerContent"></div>
+  </div>
+</div>
+
+<!-- PRIZES -->
+<section class="section reveal">
+  <div class="section-title">Prêmios</div>
+  <div class="prizes" id="prizesWrap"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section reveal" style="padding-top:0;">
+  <div class="how">
+    <p><b>Como participar:</b> toque nos números que quiser (sem limite), confirme seu nome e pague o valor certinho via PIX — o código já vem com o valor preenchido, você só confere e paga. Assim que o pagamento é confirmado, seus números ficam garantidos.</p>
+    <p><b>Sorteio justo:</b> cada número pago vira um bilhete. O sorteio é feito com gerador aleatório criptográfico (o mesmo tipo usado por bancos) ou, se preferirem, com base nos resultados oficiais da Loteria Federal — públicos e conferíveis por qualquer pessoa em <a href="https://loterias.caixa.gov.br/" target="_blank" rel="noopener">loterias.caixa.gov.br</a>.</p>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="section reveal" style="padding-top:0;">
+  <div class="section-title">Escolha seus números</div>
+  <div class="legend">
+    <span><i class="dot free"></i> livre</span>
+    <span><i class="dot sel"></i> selecionado</span>
+    <span><i class="dot res"></i> reservado</span>
+    <span><i class="dot paid"></i> pago</span>
+  </div>
+  <div style="text-align:center; margin-bottom:18px;">
+    <button class="btn btn-ghost" id="myNumbersBtn">🔍 Já comprei — ver meus números</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<div class="cartbar" id="cartbar">
+  <div class="info"><span id="cartCount">0</span> número(s) selecionado(s) — <b id="cartTotal">R$ 0,00</b></div>
+  <div style="display:flex; gap:8px;">
+    <button class="btn btn-primary" id="goCheckout">Reservar e pagar</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="modal">
+    <button class="close-x" data-close="checkoutOverlay">✕</button>
+    <h3>Confirmar reserva</h3>
+    <div id="checkoutStep1">
+      <p class="hint" id="checkoutSummary"></p>
+      <label>Nome completo <span style="color:var(--cream-dim); font-weight:400;">(o mesmo que aparece no extrato do Pix)</span></label>
+      <input type="text" id="buyerName" placeholder="Ex: Ana Souza">
+      <label>E-mail (Gmail) <span style="color:var(--cream-dim); font-weight:400;">(opcional)</span></label>
+      <input type="email" id="buyerEmail" placeholder="Ex: ana@gmail.com">
+      <label>WhatsApp</label>
+      <input type="text" id="buyerPhone" placeholder="Ex: (11) 90000-0000">
+      <div class="error-msg" id="checkoutError"></div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" data-close="checkoutOverlay">Cancelar</button>
+        <button class="btn btn-primary" id="confirmReserve">Gerar PIX</button>
+      </div>
+    </div>
+    <div id="checkoutStep2" style="display:none;">
+      <div class="pay-header">
+        <span class="pay-kanji">狐</span>
+        <h4 class="pay-title">Pagamento via Pix</h4>
+      </div>
+      <div class="pay-amount">R$ <span id="payAmount">0,00</span></div>
+      <div class="qr-wrap"><div id="qrcode"></div></div>
+      <p class="hint" style="text-align:center;">Escaneie o QR Code ou copie o código Pix abaixo</p>
+      <div class="copy-field">
+        <input type="text" id="pixCode" readonly>
+        <button class="btn btn-gold" id="copyPix">Copiar</button>
+      </div>
+      <div class="pay-note">🦊 Seus números ficam <b>reservados</b> por enquanto. Envie o comprovante para a comissão da rifa confirmar o pagamento e liberar seu bilhete definitivo.</div>
+      <div class="row-actions"><button class="btn btn-primary" data-close="checkoutOverlay">Entendi</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="overlay" id="adminLoginOverlay">
+  <div class="modal">
+    <button class="close-x" data-close="adminLoginOverlay">✕</button>
+    <h3>Acesso administrador</h3>
+    <label>E-mail</label>
+    <input type="email" id="adminEmail" autocomplete="username">
+    <label>Senha</label>
+    <input type="password" id="adminPass" autocomplete="current-password">
+    <div class="error-msg" id="adminError"></div>
+    <div class="row-actions">
+      <button class="btn btn-ghost" data-close="adminLoginOverlay">Cancelar</button>
+      <button class="btn btn-primary" id="adminSubmit">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM ACTION MODAL -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal">
+    <h3>Confirmar ação</h3>
+    <p class="hint" id="confirmMsg"></p>
+    <div class="row-actions">
+      <button class="btn btn-ghost" id="confirmNo">Cancelar</button>
+      <button class="btn btn-primary" id="confirmYes">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEUS NÚMEROS -->
+<div class="overlay" id="myNumbersOverlay">
+  <div class="modal">
+    <button class="close-x" data-close="myNumbersOverlay">✕</button>
+    <h3>🦊 Meus números</h3>
+    <label>Digite seu WhatsApp ou nome completo</label>
+    <input type="text" id="myNumbersQuery" placeholder="Ex: 11 90000-0000 ou Ana Souza">
+    <div class="row-actions"><button class="btn btn-primary" id="myNumbersSearch">Buscar</button></div>
+    <div id="myNumbersResult"></div>
+  </div>
+</div>
+
+<!-- SENHA CRÍTICA (ações sensíveis) -->
+<div class="overlay" id="criticalAuthOverlay">
+  <div class="modal">
+    <h3>🔐 Confirmação extra necessária</h3>
+    <p class="hint" id="criticalAuthMsg">Essa ação é sensível e exige a senha crítica.</p>
+    <label>Senha crítica</label>
+    <input type="password" id="criticalPass">
+    <div class="error-msg" id="criticalError"></div>
+    <div class="row-actions">
+      <button class="btn btn-ghost" id="criticalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="criticalSubmit">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<section class="admin-panel" id="adminPanel">
+  <div class="section-title">Painel do administrador</div>
+
+  <div class="admin-block" style="border-color:rgba(201,162,75,0.4);">
+    <h4>🧪 Modo de teste</h4>
+    <p class="hint">Enquanto ativado, clicar em "Reservar e pagar" já marca os números escolhidos como pagos na hora, sem pedir nome, e-mail, WhatsApp ou gerar Pix — só pra você testar o site.</p>
+    <div class="row-actions"><button class="btn btn-gold" id="toggleTestMode">Ativar modo de teste</button></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Prêmios</h4>
+    <div class="admin-grid2">
+      <div>
+        <label>Prêmio 1 — título</label>
+        <input id="p1title" placeholder="Ex: Kit Kitsune">
+        <label>Prêmio 1 — descrição</label>
+        <input id="p1desc" placeholder="Detalhes do prêmio">
+      </div>
+      <div>
+        <label>Prêmio 2 — título</label>
+        <input id="p2title" placeholder="Ex: Vale-compras">
+        <label>Prêmio 2 — descrição</label>
+        <input id="p2desc" placeholder="Detalhes do prêmio">
+      </div>
+    </div>
+    <div class="row-actions"><button class="btn btn-gold" id="savePrizes">Salvar prêmios</button></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Meta de arrecadação</h4>
+    <input id="metaInput" type="number" placeholder="Ex: 750">
+    <div class="row-actions"><button class="btn btn-gold" id="saveMeta">Salvar meta</button></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Backup dos dados</h4>
+    <p class="hint">Baixe um arquivo com todos os pedidos e o resultado do sorteio. Guarde de tempos em tempos — assim, se algo der errado, você tem como conferir ou restaurar.</p>
+    <div class="row-actions"><button class="btn btn-gold" id="downloadBackup">⬇️ Baixar backup (.json)</button></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Pedidos (reservados / pagos)</h4>
+    <div class="admin-summary" id="ordersSummary"></div>
+    <div id="ordersTable"><p class="empty">Carregando...</p></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Sorteio</h4>
+    <div id="drawOptions">
+      <p class="hint">Só números <b>pagos</b> entram no sorteio. Escolha o método:</p>
+      <div class="row-actions" style="margin-top:6px;">
+        <button class="btn btn-primary" id="drawCrypto">🎲 Sortear agora (aleatório seguro)</button>
+      </div>
+      <p class="hint" style="margin-top:16px;">Ou usar os resultados da <a href="https://loterias.caixa.gov.br/" target="_blank" rel="noopener">Loteria Federal</a> (mais transparente publicamente — decida ANTES do sorteio oficial qual prêmio (1º, 2º...) vai usar, pra não dar brecha de escolher depois):</p>
+      <div class="admin-grid2">
+        <div><label>1º prêmio (5 dígitos)</label><input id="fed1" maxlength="5" placeholder="00000"></div>
+        <div><label>2º prêmio (5 dígitos)</label><input id="fed2" maxlength="5" placeholder="00000"></div>
+      </div>
+      <div class="row-actions"><button class="btn btn-gold" id="drawFederal">Calcular vencedores</button></div>
+    </div>
+    <div id="drawDoneBox" style="display:none;">
+      <p class="hint">✅ O sorteio já foi realizado e o resultado está publicado no topo do site pra todo mundo ver.</p>
+      <div class="row-actions"><button class="mini-btn danger" style="padding:9px 16px; font-size:13px;" id="redoDraw">🔄 Refazer sorteio (ação registrada)</button></div>
+    </div>
+    <div id="drawMsg" class="hint"></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>Zona de risco</h4>
+    <p class="hint">Use isto pra limpar números de teste antes de divulgar a rifa de verdade pra sala. Isso apaga todas as reservas/pagamentos (prêmios e meta continuam salvos).</p>
+    <div class="row-actions"><button class="mini-btn danger" style="padding:9px 16px; font-size:13px;" id="resetTestData">🧹 Zerar todos os números (limpar testes)</button></div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-title">Perguntas frequentes</div>
+  <div class="faq">
+    <details class="faq-item">
+      <summary>Posso escolher mais de um número?</summary>
+      <p>Sim! Não tem limite. Clique em quantos números quiser, o total é somado automaticamente.</p>
+    </details>
+    <details class="faq-item">
+      <summary>E se eu pagar o valor errado ou de outra chave?</summary>
+      <p>Fale com a comissão da rifa e mande o comprovante — ela confere manualmente e ajusta certinho.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Meu número fica garantido assim que eu escolho?</summary>
+      <p>Ele fica <b>reservado</b> pra você, mas só é confirmado de vez depois que a comissão da rifa recebe e confere o pagamento.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Como sei que o sorteio é justo?</summary>
+      <p>O sorteio usa um gerador aleatório seguro (o mesmo tipo usado por bancos) ou os resultados oficiais da Loteria Federal — os dois são conferíveis por qualquer pessoa.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Quando sai o resultado?</summary>
+      <p>Assim que a comissão da rifa realizar o sorteio, o resultado aparece automaticamente aqui no topo do site, pra todo mundo ver.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-credit">Feito para a turma · pagamento via Pix direto para a comissão da rifa · dados salvos automaticamente.</div>
+  <div class="footer-notice">⚠️ <b>Site sem servidor próprio:</b> a senha de admin protege contra uso casual, mas não substitui a confiança do grupo.</div>
+</footer>
+
+<script type="module" src="script.js"></script>
+<script type="module" src="admin.js"></script>
+</body>
+</html>
