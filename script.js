@@ -228,11 +228,11 @@ function renderPrizes() {
     card.className = 'prize-card';
     const media = idx === 0
       ? `<img class="prize-img" src="${PRIZE1_IMAGE}" alt="Copo personalizado">`
-      : `<img class="prize-img" src="${PRIZE2_IMAGE}" alt="Camisa personalizada da sala">`;
-    const title = p.title || (idx === 0 ? 'Copo personalizado (à escolha)' : 'Camisa personalizada da sala');
+      : `<img class="prize-img" src="${PRIZE2_IMAGE}" alt="Fone de ouvido sem fio">`;
+    const title = p.title || (idx === 0 ? 'Copo personalizado (à escolha)' : 'Fone de ouvido sem fio');
     const desc = p.desc || (idx === 0
       ? 'A pessoa sorteada escolhe o modelo e a cor entre as opções disponíveis.'
-      : 'A camisa oficial da nossa sala, no modelo do print. ⚠️ Vem sem nome personalizado — só o design padrão da turma.');
+      : 'Fone de ouvido sem fio, no modelo do print.');
     card.innerHTML = `${media}<span class="tag">Prêmio ${idx + 1}</span><h3>${esc(title)}</h3><p>${esc(desc)}</p>`;
     wrap.appendChild(card);
   });
