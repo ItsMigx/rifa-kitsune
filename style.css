@@ -153,8 +153,7 @@
     background:linear-gradient(90deg, transparent, var(--line));
   }
   .section-title::after{ background:linear-gradient(90deg, var(--line), transparent); }
-  .prizes{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media(max-width:560px){.prizes{grid-template-columns:1fr;}}
+  .prizes{display:grid; grid-template-columns:1fr; max-width:420px; margin:0 auto; gap:14px;}
   .prize-card{
     background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
     padding:20px; position:relative; overflow:hidden;
