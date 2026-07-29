@@ -64,7 +64,7 @@
 
 <!-- PRIZES -->
 <section class="section reveal">
-  <div class="section-title">Prêmios</div>
+  <div class="section-title">Prêmio</div>
   <div class="prizes" id="prizesWrap"></div>
 </section>
 
@@ -202,22 +202,12 @@
   </div>
 
   <div class="admin-block">
-    <h4>Prêmios</h4>
-    <div class="admin-grid2">
-      <div>
-        <label>Prêmio 1 — título</label>
-        <input id="p1title" placeholder="Ex: Kit Kitsune">
-        <label>Prêmio 1 — descrição</label>
-        <input id="p1desc" placeholder="Detalhes do prêmio">
-      </div>
-      <div>
-        <label>Prêmio 2 — título</label>
-        <input id="p2title" placeholder="Ex: Vale-compras">
-        <label>Prêmio 2 — descrição</label>
-        <input id="p2desc" placeholder="Detalhes do prêmio">
-      </div>
-    </div>
-    <div class="row-actions"><button class="btn btn-gold" id="savePrizes">Salvar prêmios</button></div>
+    <h4>Prêmio</h4>
+    <label>Título</label>
+    <input id="p1title" placeholder="Ex: Cesta de chocolates">
+    <label>Descrição</label>
+    <input id="p1desc" placeholder="Detalhes do prêmio">
+    <div class="row-actions"><button class="btn btn-gold" id="savePrizes">Salvar prêmio</button></div>
   </div>
 
   <div class="admin-block">
@@ -246,11 +236,9 @@
         <button class="btn btn-primary" id="drawCrypto">🎲 Sortear agora (aleatório seguro)</button>
       </div>
       <p class="hint" style="margin-top:16px;">Ou usar os resultados da <a href="https://loterias.caixa.gov.br/" target="_blank" rel="noopener">Loteria Federal</a> (mais transparente publicamente — decida ANTES do sorteio oficial qual prêmio (1º, 2º...) vai usar, pra não dar brecha de escolher depois):</p>
-      <div class="admin-grid2">
-        <div><label>1º prêmio (5 dígitos)</label><input id="fed1" maxlength="5" placeholder="00000"></div>
-        <div><label>2º prêmio (5 dígitos)</label><input id="fed2" maxlength="5" placeholder="00000"></div>
-      </div>
-      <div class="row-actions"><button class="btn btn-gold" id="drawFederal">Calcular vencedores</button></div>
+      <label>Prêmio da Loteria Federal usado (5 dígitos)</label>
+      <input id="fed1" maxlength="5" placeholder="00000">
+      <div class="row-actions"><button class="btn btn-gold" id="drawFederal">Calcular vencedor</button></div>
     </div>
     <div id="drawDoneBox" style="display:none;">
       <p class="hint">✅ O sorteio já foi realizado e o resultado está publicado no topo do site pra todo mundo ver.</p>
