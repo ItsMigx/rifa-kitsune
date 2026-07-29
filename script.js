@@ -15,7 +15,7 @@ import {
   doc,
   runTransaction
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { FOX_LOGO, PRIZE1_IMAGE, PRIZE2_IMAGE } from "./images.js";
+import { FOX_LOGO, PRIZE_IMAGE } from "./images.js";
 
 /* ============ CONFIG ============ */
 export const TOTAL_NUMBERS = 150;
@@ -26,7 +26,7 @@ const PIX = {
   city: "SAO PAULO"
 };
 
-export let state = { numbers: {}, prizes: [{ title: "", desc: "" }, { title: "", desc: "" }], meta: 0, draw: null };
+export let state = { numbers: {}, prizes: [{ title: "", desc: "" }], meta: 0, draw: null };
 export let selected = new Set();
 export let isAdmin = false; // controlado de verdade pelo admin.js (Firebase Auth); aqui só reflete o estado atual para o render()
 export function setIsAdmin(v) { isAdmin = v; }
@@ -223,19 +223,14 @@ function renderPrizes() {
   const wrap = document.getElementById('prizesWrap');
   if (!wrap) return;
   wrap.innerHTML = "";
-  state.prizes.forEach((p, idx) => {
-    const card = document.createElement('div');
-    card.className = 'prize-card';
-    const media = idx === 0
-      ? `<img class="prize-img" src="${PRIZE1_IMAGE}" alt="Copo personalizado">`
-      : `<img class="prize-img" src="${PRIZE2_IMAGE}" alt="Fone de ouvido sem fio">`;
-    const title = p.title || (idx === 0 ? 'Copo personalizado (à escolha)' : 'Fone de ouvido sem fio');
-    const desc = p.desc || (idx === 0
-      ? 'A pessoa sorteada escolhe o modelo e a cor entre as opções disponíveis.'
-      : 'Fone de ouvido sem fio, no modelo do print.');
-    card.innerHTML = `${media}<span class="tag">Prêmio ${idx + 1}</span><h3>${esc(title)}</h3><p>${esc(desc)}</p>`;
-    wrap.appendChild(card);
-  });
+  const p = state.prizes[0] || {};
+  const card = document.createElement('div');
+  card.className = 'prize-card';
+  const media = `<img class="prize-img" src="${PRIZE_IMAGE}" alt="Cesta de chocolates">`;
+  const title = p.title || 'Cesta de chocolates';
+  const desc = p.desc || 'Uma cesta de chocolates, no modelo do print.';
+  card.innerHTML = `${media}<span class="tag">Prêmio</span><h3>${esc(title)}</h3><p>${esc(desc)}</p>`;
+  wrap.appendChild(card);
 }
 
 let lastDrawTs = null;
@@ -252,12 +247,10 @@ function renderWinner() {
     launchConfetti();
     sndDraw();
   }
-  const t1 = state.numbers[d.ticket1];
-  const t2 = state.numbers[d.ticket2];
+  const t = state.numbers[d.ticket];
   const methodLabel = d.method === 'federal' ? 'Loteria Federal' : 'Sorteio criptográfico seguro';
   document.getElementById('winnerContent').innerHTML = `
-    <div class="w-row">Prêmio 1 → nº <b>${String(d.ticket1).padStart(3, '0')}</b> — ${t1 ? esc(t1.nome) : '—'}</div>
-    <div class="w-row">Prêmio 2 → nº <b>${String(d.ticket2).padStart(3, '0')}</b> — ${t2 ? esc(t2.nome) : '—'}</div>
+    <div class="w-row">Vencedor(a) → nº <b>${String(d.ticket).padStart(3, '0')}</b> — ${t ? esc(t.nome) : '—'}</div>
     <div class="w-row" style="color:var(--cream-dim); font-size:12px;">Método: ${methodLabel}</div>
   `;
 }
