@@ -224,21 +224,18 @@ document.getElementById('resetTestData').addEventListener('click', async () => {
 function fillAdminInputs() {
   document.getElementById('p1title').value = state.prizes[0]?.title || '';
   document.getElementById('p1desc').value = state.prizes[0]?.desc || '';
-  document.getElementById('p2title').value = state.prizes[1]?.title || '';
-  document.getElementById('p2desc').value = state.prizes[1]?.desc || '';
   document.getElementById('metaInput').value = state.meta || '';
 }
 
 document.getElementById('savePrizes').addEventListener('click', async () => {
   const prizes = [
-    { title: document.getElementById('p1title').value.trim(), desc: document.getElementById('p1desc').value.trim() },
-    { title: document.getElementById('p2title').value.trim(), desc: document.getElementById('p2desc').value.trim() }
+    { title: document.getElementById('p1title').value.trim(), desc: document.getElementById('p1desc').value.trim() }
   ];
   try {
     await setDoc(configDocRef, { prizes }, { merge: true });
-    await logHistory('prizes', 'Prêmios atualizados.');
-    showToast('Prêmios salvos!');
-  } catch (e) { console.error(e); showToast('Erro ao salvar prêmios.'); }
+    await logHistory('prizes', 'Prêmio atualizado.');
+    showToast('Prêmio salvo!');
+  } catch (e) { console.error(e); showToast('Erro ao salvar prêmio.'); }
 });
 
 document.getElementById('saveMeta').addEventListener('click', async () => {
@@ -353,29 +350,20 @@ registerAdminRenderHook(renderAdminOrders);
 function getPaidNumbers() {
   return Object.entries(state.numbers).filter(([n, e]) => e && e.status === 'pago').map(([n]) => parseInt(n)).sort((a, b) => a - b);
 }
-function buyerId(entry) {
-  const phone = (entry.telefone || '').replace(/\D/g, '');
-  return phone || (entry.nome || '').trim().toLowerCase();
-}
 
 document.getElementById('drawCrypto').addEventListener('click', async () => {
   const pool = getPaidNumbers();
   const msg = document.getElementById('drawMsg');
-  if (pool.length < 2) { msg.textContent = 'É preciso pelo menos 2 números pagos para sortear os 2 prêmios.'; return; }
-  const uniqueBuyers = new Set(pool.map(n => buyerId(state.numbers[n])));
-  if (uniqueBuyers.size < 2) { msg.textContent = 'É preciso que pelo menos 2 pessoas diferentes tenham números pagos, pra garantir que a mesma pessoa não leve os dois prêmios.'; return; }
+  if (pool.length < 1) { msg.textContent = 'É preciso pelo menos 1 número pago para sortear o prêmio.'; return; }
   if (!(await showConfirm('Realizar o sorteio agora? Essa ação define o resultado final e fica visível para todo mundo.'))) return;
   if (!(await requireCriticalAuth('Realizar o sorteio exige a senha crítica.'))) return;
-  const arr = new Uint32Array(2);
+  const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
-  const ticket1 = pool[arr[0] % pool.length];
-  const buyer1 = buyerId(state.numbers[ticket1]);
-  const pool2 = pool.filter(n => buyerId(state.numbers[n]) !== buyer1);
-  const ticket2 = pool2[arr[1] % pool2.length];
+  const ticket = pool[arr[0] % pool.length];
   try {
-    const draw = { method: 'crypto', ticket1, ticket2, ts: Date.now() };
+    const draw = { method: 'crypto', ticket, ts: Date.now() };
     await setDoc(configDocRef, { draw }, { merge: true });
-    await logHistory('draw', `Sorteio (crypto): ${ticket1} / ${ticket2}`);
+    await logHistory('draw', `Sorteio (crypto): ${ticket}`);
     msg.textContent = 'Sorteio realizado com sucesso!';
   } catch (e) { console.error(e); msg.textContent = 'Erro ao salvar o resultado do sorteio.'; }
 });
@@ -384,21 +372,15 @@ document.getElementById('drawFederal').addEventListener('click', async () => {
   const pool = getPaidNumbers();
   const msg = document.getElementById('drawMsg');
   const f1 = parseInt(document.getElementById('fed1').value);
-  const f2 = parseInt(document.getElementById('fed2').value);
-  if (pool.length < 2) { msg.textContent = 'É preciso pelo menos 2 números pagos para sortear os 2 prêmios.'; return; }
-  const uniqueBuyers = new Set(pool.map(n => buyerId(state.numbers[n])));
-  if (uniqueBuyers.size < 2) { msg.textContent = 'É preciso que pelo menos 2 pessoas diferentes tenham números pagos, pra garantir que a mesma pessoa não leve os dois prêmios.'; return; }
-  if (isNaN(f1) || isNaN(f2)) { msg.textContent = 'Informe os dois números de 5 dígitos da Loteria Federal.'; return; }
+  if (pool.length < 1) { msg.textContent = 'É preciso pelo menos 1 número pago para sortear o prêmio.'; return; }
+  if (isNaN(f1)) { msg.textContent = 'Informe o número de 5 dígitos da Loteria Federal.'; return; }
   if (!(await showConfirm('Realizar o sorteio agora? Essa ação define o resultado final e fica visível para todo mundo.'))) return;
   if (!(await requireCriticalAuth('Realizar o sorteio exige a senha crítica.'))) return;
-  const ticket1 = pool[f1 % pool.length];
-  const buyer1 = buyerId(state.numbers[ticket1]);
-  const pool2 = pool.filter(n => buyerId(state.numbers[n]) !== buyer1);
-  const ticket2 = pool2[f2 % pool2.length];
+  const ticket = pool[f1 % pool.length];
   try {
-    const draw = { method: 'federal', ticket1, ticket2, ts: Date.now() };
+    const draw = { method: 'federal', ticket, ts: Date.now() };
     await setDoc(configDocRef, { draw }, { merge: true });
-    await logHistory('draw', `Sorteio (Loteria Federal): ${ticket1} / ${ticket2}`);
+    await logHistory('draw', `Sorteio (Loteria Federal): ${ticket}`);
     msg.textContent = 'Sorteio calculado com base na Loteria Federal!';
   } catch (e) { console.error(e); msg.textContent = 'Erro ao salvar o resultado do sorteio.'; }
 });
